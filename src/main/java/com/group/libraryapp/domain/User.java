@@ -19,11 +19,21 @@ public class User {
 
     protected User(){}
 
+    public User(Long id, String name, Integer age) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+    }
+
     public User(String name, Integer age) {
         if(name == null || name.isEmpty())
             throw new IllegalArgumentException(String.format("이름(name(%s))이 잘못 들어갔습니다.", name));
         this.name = name;
         this.age = age;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
