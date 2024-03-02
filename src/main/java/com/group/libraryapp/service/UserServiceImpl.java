@@ -42,4 +42,14 @@ public class UserServiceImpl implements UserService {
 //        repository.save(user); // 영속성 컨텍스트의 변경감지(dirty check) 기능으로 생략가능 // 영속성 컨텍스트 사용을 위해 @Transactional 추가 필수(없다면 save메소드 필수)
     }
 
+    @Transactional
+    public void deleteUser(String name) {
+        User user = repository.findByName(name)
+                .orElseThrow(IllegalArgumentException::new);
+        if(user == null)
+            throw new IllegalArgumentException();
+        repository.delete(user);
+    }
+
+    
 }
