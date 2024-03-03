@@ -2,6 +2,8 @@ package com.group.libraryapp.domain;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User {
@@ -13,6 +15,9 @@ public class User {
     @Column(name = "name", nullable = false, length = 25)
     private String name; // 필드랑 db 컬럼명이 같은 경우, name 속성 생략 가능
     private Integer age;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserLoanHistory> userLoanHistories  = new ArrayList<>();
 
 
     protected User(){}
@@ -35,6 +40,11 @@ public class User {
         this.name = name;
     }
 
+    public void checkoutBook(Book book) {
+        this.userLoanHistories.add(new UserLoanHistory(this, book.getName()));
+    }
+
+
     public Long getId() {
         return id;
     }
@@ -47,4 +57,7 @@ public class User {
         return age;
     }
 
+    public List<UserLoanHistory> getUserLoanHistories() {
+        return userLoanHistories;
+    }
 }
