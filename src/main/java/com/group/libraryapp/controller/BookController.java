@@ -2,6 +2,7 @@ package com.group.libraryapp.controller;
 
 import com.group.libraryapp.dto.book.BookRequestCheckout;
 import com.group.libraryapp.dto.book.BookRequestCreate;
+import com.group.libraryapp.dto.book.BookRequestReturn;
 import com.group.libraryapp.service.BookService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,7 +32,9 @@ public class BookController {
     }
 
     // 책 반납
-
-
+    @PutMapping("/book/return")
+    public void returnBook(@RequestBody BookRequestReturn requestRetn){
+        service.returnBook(requestRetn);
+    }
 
 }

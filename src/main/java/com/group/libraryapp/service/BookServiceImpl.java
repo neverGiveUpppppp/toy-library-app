@@ -2,12 +2,16 @@ package com.group.libraryapp.service;
 
 import com.group.libraryapp.domain.Book;
 import com.group.libraryapp.domain.User;
+import com.group.libraryapp.domain.UserLoanHistory;
 import com.group.libraryapp.dto.book.BookRequestCheckout;
 import com.group.libraryapp.dto.book.BookRequestCreate;
+import com.group.libraryapp.dto.book.BookRequestReturn;
 import com.group.libraryapp.repository.UserLoanHistoryRepository;
 import com.group.libraryapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class BookServiceImpl implements BookService{
@@ -41,6 +45,30 @@ public class BookServiceImpl implements BookService{
         User user = userRepo.findByName(requestChkout.getUserName())
                 .orElseThrow(IllegalArgumentException::new);
         user.checkoutBook(book);
+    }
+
+    @Transactional
+    public void returnBook(BookRequestReturn requestRetn){
+        // 책 반납
+        // 유저가 빌린 책 // 유저 대여 기록 // 유저대여기록 도메인객체에서 기록 찾아보고 반환하기
+        // 해당 유저가 빌린 책 중 특정 책 반환이기에 유저에서 유저대여기록을 찾아들어가 대여여부인 is_returned을 변경 // list수정인 .set()이 index를 요구되어 index를 구해오기가 까다로움
+//        boolean isLoaned = loanHistoryRepo.existsByBookNameAndIsReturned(requestRetn.getBookName(), false);
+//        if (isLoaned){
+//            User user = userRepo.findByName(requestRetn.getUserName())
+//                    .orElseThrow(IllegalArgumentException::new);
+//            user.returnBook(requestRetn.getBookName());
+//        }
+
+        // 반납 시 해야할 것
+        //    1)userId를 찾아서 가져오기
+        //    2)userId와 bookname으로 대출 기록 찾기
+        User user = userRepo.findByName(requestRetn.getUserName())
+                .orElseThrow(IllegalArgumentException::new);
+        UserLoanHistory loanHistory = loanHistoryRepo.findByUserIdAndBookName(user.getId(), requestRetn.getBookName()).stream()
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+        loanHistory.returnBook();
+//        loanHistoryRepo.save(loanHistory); // 영속성 컨텍스트 변경감지(dirty check) 작동으로 자동저장
     }
 
 }
